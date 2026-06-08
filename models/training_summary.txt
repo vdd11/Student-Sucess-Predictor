@@ -1,0 +1,18 @@
+Best model: Gradient Boosting
+Accuracy: 0.955
+ROC AUC: 0.987
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.96      0.96      0.96        25
+           1       0.95      0.95      0.95        19
+
+    accuracy                           0.95        44
+   macro avg       0.95      0.95      0.95        44
+weighted avg       0.95      0.95      0.95        44
+
+
+Confusion Matrix:
+[[24  1]
+ [ 1 18]]

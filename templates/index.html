@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <p class="eyebrow">Machine Learning + Flask Project</p>
+    <h1>Predict student academic success with data.</h1>
+    <p class="subtitle">An end-to-end data science app that uses student performance data to estimate pass probability and identify academic risk.</p>
+    <a class="button" href="{{ url_for('predict') }}">Try the Predictor</a>
+  </div>
+  <div class="hero-card">
+    <h3>Project Highlights</h3>
+    <ul>
+      <li>UCI public dataset</li>
+      <li>Classification model</li>
+      <li>Flask web app</li>
+      <li>Render-ready deployment</li>
+    </ul>
+  </div>
+</section>
+<section class="cards">
+  <div class="card"><span>{{ stats.rows }}</span><p>Dataset Rows</p></div>
+  <div class="card"><span>{{ stats.pass_rate }}%</span><p>Observed Pass Rate</p></div>
+  <div class="card"><span>{{ stats.best_auc }}</span><p>Best ROC AUC</p></div>
+</section>
+{% endblock %}

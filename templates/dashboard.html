@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Model Dashboard</h1>
+<section class="cards">
+  <div class="card"><span>{{ stats.rows }}</span><p>Rows</p></div>
+  <div class="card"><span>{{ stats.columns }}</span><p>Columns</p></div>
+  <div class="card"><span>{{ stats.avg_grade }}</span><p>Average Final Grade</p></div>
+  <div class="card"><span>{{ stats.avg_absences }}</span><p>Average Absences</p></div>
+</section>
+<div class="panel">
+  <h2>Model Comparison</h2>
+  <table>
+    <thead><tr><th>Model</th><th>Accuracy</th><th>ROC AUC</th></tr></thead>
+    <tbody>
+      {% for row in metrics %}
+      <tr><td>{{ row.model }}</td><td>{{ '%.3f'|format(row.accuracy) }}</td><td>{{ '%.3f'|format(row.roc_auc) }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
