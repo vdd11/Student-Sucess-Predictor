@@ -1,27 +1,21 @@
-{% extends "base.html" %}
-{% block content %}
-<h1>Student Outcome Predictor</h1>
-<p class="subtitle narrow">Enter a student profile below to estimate whether the student is likely to pass.</p>
-<form method="POST" class="form-grid">
-  <label>Age<input type="number" name="age" min="15" max="22" value="17" required></label>
-  <label>Study Time<select name="studytime"><option value="1">&lt;2 hours/week</option><option value="2" selected>2-5 hours/week</option><option value="3">5-10 hours/week</option><option value="4">10+ hours/week</option></select></label>
-  <label>Past Failures<input type="number" name="failures" min="0" max="4" value="0" required></label>
-  <label>Absences<input type="number" name="absences" min="0" max="100" value="4" required></label>
-  <label>First Period Grade<input type="number" name="G1" min="0" max="20" value="12" required></label>
-  <label>Second Period Grade<input type="number" name="G2" min="0" max="20" value="12" required></label>
-  <label>School Support<select name="schoolsup"><option value="yes">Yes</option><option value="no" selected>No</option></select></label>
-  <label>Family Support<select name="famsup"><option value="yes" selected>Yes</option><option value="no">No</option></select></label>
-  <label>Paid Tutoring<select name="paid"><option value="yes">Yes</option><option value="no" selected>No</option></select></label>
-  <label>Internet Access<select name="internet"><option value="yes" selected>Yes</option><option value="no">No</option></select></label>
-  <label>Wants Higher Education<select name="higher"><option value="yes" selected>Yes</option><option value="no">No</option></select></label>
-  <label>Romantic Relationship<select name="romantic"><option value="yes">Yes</option><option value="no" selected>No</option></select></label>
-  <button class="button full" type="submit">Predict Outcome</button>
-</form>
-{% if result %}
-<div class="result {{ 'success' if result.prediction == 1 else 'warning' }}">
-  <h2>{{ result.label }}</h2>
-  <p>Pass probability: <strong>{{ result.probability }}%</strong></p>
-  <p>Academic risk estimate: <strong>{{ result.risk }}%</strong></p>
-</div>
-{% endif %}
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Result</title>
+</head>
+<body>
+    <h1>Prediction Analysis</h1>
+    
+    {% if result == 1 %}
+        <h2 style="color: green;">🎉 The student is LIKELY TO PASS.</h2>
+        <p>Academic indicators show steady performance. Maintain support structures.</p>
+    {% else %}
+        <h2 style="color: red;">⚠️ The student is AT RISK of failing.</h2>
+        <p>Early intervention is highly recommended! Consider tutoring resources.</p>
+    {% endif %}
+    
+    <br>
+    <a href="/">Go Back</a>
+</body>
+</html>
