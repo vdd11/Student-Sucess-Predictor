@@ -1,3 +1,14 @@
+#Render Link
+https://student-sucess-predictor-1.onrender.com/predict
+
+
+
+
+
+
+
+
+
 # Student Success Analytics Platform
 
 A Flask machine learning web app that predicts whether a student is likely to pass based on academic, demographic, and school-related features from the UCI Student Performance dataset.
