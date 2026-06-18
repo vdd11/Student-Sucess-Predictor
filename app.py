@@ -1,74 +1,54 @@
-from pathlib import Path
+from flask import Flask, render_template, request
 import joblib
 import pandas as pd
-from flask import Flask, render_template, request
 
 app = Flask(__name__)
-BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "models" / "student_success_model.joblib"
-FEATURES_PATH = BASE_DIR / "models" / "app_features.joblib"
-STATS_PATH = BASE_DIR / "models" / "dashboard_stats.joblib"
-METRICS_PATH = BASE_DIR / "models" / "model_metrics.csv"
 
+# Load the serialized model on startup
+model = joblib.load('model.pkl')
 
-def load_artifacts():
-    if not MODEL_PATH.exists():
-        raise FileNotFoundError("Model file missing. Run python train_model.py first.")
-    model = joblib.load(MODEL_PATH)
-    features = joblib.load(FEATURES_PATH)
-    stats = joblib.load(STATS_PATH) if STATS_PATH.exists() else {}
-    metrics = pd.read_csv(METRICS_PATH).to_dict("records") if METRICS_PATH.exists() else []
-    return model, features, stats, metrics
-
-
-@app.route("/")
+@app.route('/')
 def home():
-    _, _, stats, _ = load_artifacts()
-    return render_template("index.html", stats=stats)
+    return render_template('index.html')
 
-
-@app.route("/predict", methods=["GET", "POST"])
+@app.route('/predict', methods=['POST'])
 def predict():
-    model, features, _, _ = load_artifacts()
-    result = None
-    if request.method == "POST":
-        form = request.form
-        input_data = {
-            "age": int(form.get("age")),
-            "studytime": int(form.get("studytime")),
-            "failures": int(form.get("failures")),
-            "absences": int(form.get("absences")),
-            "G1": int(form.get("G1")),
-            "G2": int(form.get("G2")),
-            "schoolsup": form.get("schoolsup"),
-            "famsup": form.get("famsup"),
-            "paid": form.get("paid"),
-            "internet": form.get("internet"),
-            "higher": form.get("higher"),
-            "romantic": form.get("romantic"),
-        }
-        X_new = pd.DataFrame([input_data], columns=features)
-        prediction = int(model.predict(X_new)[0])
-        probability = float(model.predict_proba(X_new)[0][1])
-        result = {
-            "label": "Likely to Pass" if prediction == 1 else "At Risk of Not Passing",
-            "probability": round(probability * 100, 1),
-            "risk": round((1 - probability) * 100, 1),
-            "prediction": prediction,
-        }
-    return render_template("predict.html", result=result)
+    if request.method == 'POST':
+        # Retrieve values submitted in the HTML form
+        age = int(request.form['age'])
+        studytime = int(request.form['studytime'])
+        failures = int(request.form['failures'])
+        absences = int(request.form['absences'])
+        
+        # Grade inputs from the HTML form (0-100% scale)
+        g1_pct = float(request.form['g1'])
+        g2_pct = float(request.form['g2'])
+        
+        # Convert 0-100% scale to the model's native 0-20 scale
+        g1_mapped = (g1_pct / 100) * 20
+        g2_mapped = (g2_pct / 100) * 20
+        
+        schoolsup = int(request.form['schoolsup'])
+        famsup = int(request.form['famsup'])
+        paid = int(request.form['paid'])
+        internet = int(request.form['internet'])
+        higher = int(request.form['higher'])
+        romantic = int(request.form['romantic'])
+        
+        # Create DataFrame matching the model's expected features
+        input_data = pd.DataFrame([[
+            age, studytime, failures, absences, g1_mapped, g2_mapped,
+            schoolsup, famsup, paid, internet, higher, romantic
+        ]], columns=[
+            'age', 'studytime', 'failures', 'absences', 'G1', 'G2', 
+            'schoolsup', 'famsup', 'paid', 'internet', 'higher', 'romantic'
+        ])
+        
+        # Run prediction
+        prediction = model.predict(input_data)
+        pass_status = prediction[0] # 1 or 0
+        
+        return render_template('predict.html', result=pass_status)
 
-
-@app.route("/dashboard")
-def dashboard():
-    _, _, stats, metrics = load_artifacts()
-    return render_template("dashboard.html", stats=stats, metrics=metrics)
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
