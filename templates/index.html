@@ -1,25 +1,54 @@
-{% extends "base.html" %}
-{% block content %}
-<section class="hero">
-  <div>
-    <p class="eyebrow">Machine Learning + Flask Project</p>
-    <h1>Predict student academic success with data.</h1>
-    <p class="subtitle">An end-to-end data science app that uses student performance data to estimate pass probability and identify academic risk.</p>
-    <a class="button" href="{{ url_for('predict') }}">Try the Predictor</a>
-  </div>
-  <div class="hero-card">
-    <h3>Project Highlights</h3>
-    <ul>
-      <li>UCI public dataset</li>
-      <li>Classification model</li>
-      <li>Flask web app</li>
-      <li>Render-ready deployment</li>
-    </ul>
-  </div>
-</section>
-<section class="cards">
-  <div class="card"><span>{{ stats.rows }}</span><p>Dataset Rows</p></div>
-  <div class="card"><span>{{ stats.pass_rate }}%</span><p>Observed Pass Rate</p></div>
-  <div class="card"><span>{{ stats.best_auc }}</span><p>Best ROC AUC</p></div>
-</section>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Success Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>🎓 Student Success Analytics Platform</h1>
+    <p>Fill out the form below to determine if a student is at risk.</p>
+    
+    <form action="/predict" method="POST">
+        <label>Age: <input type="number" name="age" min="15" max="22" value="17" required></label><br><br>
+        
+        <label>Study Time:
+            <select name="studytime">
+                <option value="1">< 2 hours</option>
+                <option value="2">2 to 5 hours</option>
+                <option value="3">5 to 10 hours</option>
+                <option value="4">> 10 hours</option>
+            </select>
+        </label><br><br>
+        
+        <label>Past Failures: <input type="number" name="failures" min="0" value="0" required></label><br><br>
+        <label>Absences: <input type="number" name="absences" min="0" value="0" required></label><br><br>
+        
+        <h3>Grades (Percentage System 0-100%)</h3>
+        <label>G1 Grade (%): <input type="number" name="g1" min="0" max="100" value="50" required></label><br><br>
+        <label>G2 Grade (%): <input type="number" name="g2" min="0" max="100" value="50" required></label><br><br>
+        
+        <h3>Support & Environment</h3>
+        <label>Extra Educational Support: 
+            <select name="schoolsup"><option value="0">No</option><option value="1">Yes</option></select>
+        </label><br><br>
+        <label>Family Educational Support: 
+            <select name="famsup"><option value="0">No</option><option value="1">Yes</option></select>
+        </label><br><br>
+        <label>Paid Extra Classes: 
+            <select name="paid"><option value="0">No</option><option value="1">Yes</option></select>
+        </label><br><br>
+        <label>Internet Access: 
+            <select name="internet"><option value="0">No</option><option value="1">Yes</option></select>
+        </label><br><br>
+        <label>Higher Education Goal: 
+            <select name="higher"><option value="0">No</option><option value="1">Yes</option></select>
+        </label><br><br>
+        <label>Romantic Relationship: 
+            <select name="romantic"><option value="0">No</option><option value="1">Yes</option></select>
+        </label><br><br>
+        
+        <button type="submit">Run Prediction</button>
+    </form>
+</body>
+</html>
